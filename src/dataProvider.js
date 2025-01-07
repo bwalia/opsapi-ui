@@ -7,15 +7,12 @@ const httpClient = fetchUtils.fetchJson;
 const headerOptions = () => {
     const options = {}
     const token = localStorage.getItem('auth');
-    console.log({ token });
-    
-    
+
     const customHeaders = (options.headers ||
         new Headers({
             Accept: 'application/json',
             Authorization: `Bearer ${token}`
         }));
-    customHeaders.set('ngrok-skip-browser-warning', 'false');
     options.headers = customHeaders;
     return options;
 }
@@ -33,7 +30,12 @@ const dataProvider = (apiUrl) => {
             };
             const options = headerOptions();
             const url = `${apiUrl}/${resource}?${stringify(query)}`;
-            const { json, headers } = await httpClient(url, options);
+            const { json, headers } = await httpClient(url, { method: 'GET', ...options });
+            for (const pair of headers.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            console.log({ json });
+
             return json;
         },
 
@@ -92,7 +94,7 @@ const dataProvider = (apiUrl) => {
                 body: JSON.stringify(params.data),
                 ...options
             })
-            
+
             return json;
         },
 
