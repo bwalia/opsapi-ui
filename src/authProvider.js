@@ -2,6 +2,16 @@ import { jwtDecode } from "jwt-decode";
 import { fetchUtils } from 'react-admin';
 const httpClient = fetchUtils.fetchJson;
 
+const headerOptions = () => {
+    const options = {}
+    const customHeaders = (options.headers ||
+        new Headers({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }));
+    options.headers = customHeaders;
+    return options;
+}
+
 export default {
     async login({ username, password }) {
         const loginUrl = import.meta.env.VITE_LOGIN_URL
@@ -55,7 +65,8 @@ export default {
         } else {
             const decoded = jwtDecode(token);
             localStorage.setItem("auth", token);
-            localStorage.setItem("user", JSON.stringify(decoded));
+            localStorage.setItem("user", JSON.stringify(decoded.userinfo));
+            localStorage.setItem("token_response", JSON.stringify(decoded.token_response));
 
             // urlParams.delete('token');
         }
@@ -65,21 +76,37 @@ export default {
         const userObj = localStorage.getItem('user');
         if (userObj) {
             const user = JSON.parse(userObj);
-            const url = `${loginServer}/auth/logout?sub=${user.sub}`
+            const url = `${loginServer}/auth/logout`
             try {
-                const { status, json } = await httpClient(url);
-                console.log({status, json});
-                
-                if (status == 200) {
-                    const { protocol, hostname, port } = window.location;
-                    const baseURL = port ? `${protocol}//${hostname}:${port}` : `${protocol}//${hostname}`;
-                    localStorage.removeItem("auth");
-                    localStorage.removeItem("user");
-                    // window.location.href = baseURL;
+                let tokenResp = localStorage.getItem("token_response")
+                if (tokenResp) {
+                    tokenResp = JSON.parse(tokenResp)
+                    const postData = {
+                        "refreshToken": tokenResp.refresh_token,
+                        "accessToken": tokenResp.access_token
+                    }
+                    const options = headerOptions();
+                    const { status, json, headers } = await httpClient(url, {
+                        method: 'POST',
+                        body: new URLSearchParams(postData),
+                        ...options
+                    });
+                    console.log({
+                        status,
+                        json,
+                    });
+                    
+                    if (status == 204) {
+                        const { protocol, hostname, port } = window.location;
+                        const baseURL = port ? `${protocol}//${hostname}:${port}` : `${protocol}//${hostname}`;
+                        localStorage.removeItem("auth");
+                        localStorage.removeItem("user");
+                        // window.location.href = baseURL;
+                    }
                 }
             } catch (_error) {
-                console.log({_error});
-                
+                console.log({ _error });
+
                 throw new Error(_error);
             }
         }
@@ -88,7 +115,7 @@ export default {
         // }
         // const auth = await response.json();
         // console.log({auth});
-        
+
         // localStorage.removeItem("auth");
         // localStorage.removeItem("user");
         // localStorage.removeItem("permissions");
