@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: bwalia/opsapi-ui
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: test-ui.opsapi.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enable: false
+
+secrets:
+  VITE_API_URL: "AgB5zJ5LJFyD8SmHxOmy3rfGi5iHoGdqO83AMLspHrJDhQAx7wOX35Py4n70g6RLkeRrmGM4hw8jF3FgiEyuMX45k91GIvEfoWwyy6BkhYDHZXlomf7q969qeGTJf100tAa35b6FIH19HU4xmWPxd+gtX7ovF/LvEbZxOQLoRk7scQQplMrKYjux838CnBxBibm7YMmXreM/N9EixDGiHd4nNow8VpEM1Ef0xhk8/8RTOfyJzgFiE1SlvjPd8ElYFPa8tkqTKRmZ+j5Ud3/7BF53nWAgUoZCZcmiFUH4Yi68W7Wl+GlCO5cuoXYSPdH6dDg6jwYDkyFKd+aNYLuyiHkFDaf3bAy4KOmQIC68I1qn/RpVv6HTBY6YRC4HcqSmAEohJB6/zJMdyM+Ol9JhGXjjgV+83j9KoCSYm8wrXtiyeeYnNLkeO1xj81yUCmGCicinSm1yOLI8jQ6yqi6rsS63mQH8I0lYtotoW9m2l9s/89ep2MyV0ZL3qqLp12rsbKXNCRthk2Lkz8melyHEtmm0lbB5GXzYJ8C8HX7TqxhJPxEC5QR1NJ1VOlNSuAyOIt5/MWBQ5X5TZb7FEX+j3VzoezVzKOTFM/bGblnm5a7XT5rIILoMS2z6HqacIf9CfwvZsq8avUBli83EfCs59z163dPrCOO5+irsFPp3QaBE/2A5TpNIzAoFLfY3RjSheOOT3k/tK+UXzcbUYH2NMZznRCcCgbqSowur7SWR"
+  VITE_LOGIN_SERVER: "AgCgwCK8Aym2o97jxqWkxgYwRBzVrX2DHNCf3duP33Dy9qGJOcgRfjd/48QTqe0rJ2HgkeSRLdmXrBLejlJHGh3JOs/QkdDouBs2cHnK1ERO9j3ZyXEu4Eqc4SsxL/UKkUznYytmqIbS8fv750aQl8jRnOk9jrAJky1VZ7lmqJOR/+AM1Ox6fcIXPtAfevaHfXnrRnRDg6JEaChiEZCdfm1DTHnKd5YCzjUL1uVHKhpovcFNqTd+ILm2i2XByFZ+eR5GDqF9c0X6GHlV3ody9a/GlQqKoGXJygBDgb9BAoi00Z4nS4BDK6p4KO+fUsV7P9h7ncvnRhTtfT9ElH96DVnU+WOZZqpfhaoy+hAiQ6E/4twZVAzabjEZ6tMu9y+wZFCg2iqvgMs7ozr1wMMUZFkBwH98Wm4H2ehl16m3m6tV3YMgNtx6w7JULqxchJxzy8FKFQdbA3aevgtAZpijRkEyWo3VmOb9AXFo8UFLut0cINx6emqrmv4gE6aqlZSJWttG1smnWsRhaoLcG4/WhFZV6NybXP5W76U8/brDAIB4OTRnffvrWzEkr8FMrOakQJrYJcFKmOPnFWEPRim12oJn16r+X+RnuvrwVP9B7ENVm3XRL+7jbU4GTnzgEA0GBso36ZWdn109t/PJ2WCN9rwPzhVKvzB9gixteVbfPxfrR+5DgYtH9XNSMIUme3OUQorAxEgSYbqlfeyMQXGEL1h7OdrBhKQ="

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SimpleForm, TextInput, ReferenceInput, required, AutocompleteInput } from 'react-admin';
+import { SimpleForm, TextInput, DateInput, required } from 'react-admin';
 import { Grid2, Box } from '@mui/material';
 
 const Form = () => {
@@ -24,11 +24,6 @@ const Form = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 6 }}>
             <TextInput type='password' source="password" validate={[required()]} />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
-            <ReferenceInput source="roles" reference="roles">
-              <AutocompleteInput optionText="role_name" />
-            </ReferenceInput>
           </Grid2>
         </Grid2>
       </Box>
