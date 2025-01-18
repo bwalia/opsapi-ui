@@ -53,7 +53,7 @@ const dataProvider = (apiUrl) => {
             const url = `${apiUrl}/${resource}?${stringify(query)}`;
             const options = headerOptions();
             const { json } = await httpClient(url, options);
-            return { data: json };
+            return json;
         },
 
         getManyReference: async (resource, params) => {

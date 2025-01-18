@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  react-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5100:80"
+    environment:
+      - VITE_LOGIN_SERVER=http://localhost:4010
+      - VITE_API_URL=http://localhost:4010/api/v2
+    volumes:
+      - ./src:/src
+      - ./public:/public
+      - /app/node_modules # Prevent overwriting node_modules with a blank local folder
+    stdin_open: true
+    tty: true

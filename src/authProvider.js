@@ -79,7 +79,7 @@ export default {
             const url = `${loginServer}/auth/logout`
             try {
                 let tokenResp = localStorage.getItem("token_response")
-                if (tokenResp) {
+                if (!!tokenResp && tokenResp != "undefined") {
                     tokenResp = JSON.parse(tokenResp)
                     const postData = {
                         "refreshToken": tokenResp.refresh_token,
@@ -101,25 +101,19 @@ export default {
                         const baseURL = port ? `${protocol}//${hostname}:${port}` : `${protocol}//${hostname}`;
                         localStorage.removeItem("auth");
                         localStorage.removeItem("user");
-                        // window.location.href = baseURL;
+                        localStorage.removeItem("token_response");
+                        window.location.href = baseURL;
                     }
+                } else {
+                    localStorage.removeItem("auth");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token_response");
                 }
             } catch (_error) {
                 console.log({ _error });
-
                 throw new Error(_error);
             }
         }
-        // if (response.status < 200 || response.status >= 300) {
-        //     throw new Error(response.statusText);
-        // }
-        // const auth = await response.json();
-        // console.log({auth});
-
-        // localStorage.removeItem("auth");
-        // localStorage.removeItem("user");
-        // localStorage.removeItem("permissions");
-        // localStorage.removeItem("role");
     },
     // async getIdentity() {
     //     const userObject = localStorage.getItem("user");
