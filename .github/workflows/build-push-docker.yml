@@ -18,12 +18,23 @@ on:
             - acc
             - prod
 
+      DEPLOYMENT_TYPE:
+        type: choice
+        description: 'Please select the build only, deploy only or build and deploy'
+        default: 'build-and-deploy'
+        required: true
+        options:
+            - build
+            - deploy
+            - build-and-deploy
+
 env:
     IMAGE_REGISTRY: bwalia
     TARGET_STACK: react_admin
     IMAGE_NAME: opsapi-ui
     TARGET_IMAGE_TAG: latest
     TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
+    DEPLOYMENT_TYPE: ${{ github.event.inputs.DEPLOYMENT_TYPE || 'build-and-deploy' }}
 
 jobs:
   build:
@@ -32,9 +43,11 @@ jobs:
     steps:
 
     - name: Checkout code
+      if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       uses: actions/checkout@v3
 
     - name: Build OPSAPI UI Docker image based on the TARGET PLATFORM Image and push to Docker Hub
+      if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
         echo "OPSAPI UI Docker image builder!"
         echo "Build, tag, and push image to the given Docker Registry."
@@ -73,6 +86,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Decode and Export Kubeconfig
+      if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       env:
         KUBECONFIG_BASE64: ${{ secrets.KUBE_CONFIG_DATA_K3S }}
       run: |
@@ -81,6 +95,7 @@ jobs:
         echo "Kubeconfig decoded and exported successfully."
 
     - name: Check and Install kubectl
+      if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
         if ! command -v kubectl &> /dev/null; then
           echo "kubectl not found. Installing kubectl..."
@@ -93,6 +108,7 @@ jobs:
       shell: bash
   
     - name: Check and Install Helm
+      if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
         if ! command -v helm &> /dev/null; then
           echo "Helm not found. Installing Helm..."
@@ -103,6 +119,7 @@ jobs:
       shell: bash
 
     - name: Deploy Helm Chart
+      if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
         helm upgrade --install opsapi-ui ./devops/helm-chart \
           --set image.repository=bwalia/opsapi-ui \

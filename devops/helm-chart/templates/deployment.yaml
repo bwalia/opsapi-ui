@@ -20,6 +20,20 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 80
+
+        volumeMounts:
+        - name: env-file
+          mountPath: /app/.env
+
+      initContainers:
+      - name: generate-env-file
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "VITE_API_URL=$VITE_API_URL" > /tmp/.env
+          echo "VITE_LOGIN_SERVER=$VITE_LOGIN_SERVER" >> /tmp/.env
         env:
         - name: VITE_API_URL
           valueFrom:
@@ -31,3 +45,10 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: VITE_LOGIN_SERVER
+        volumeMounts:
+        - name: env-file
+          mountPath: /tmp/.env
+
+      volumes:
+      - name: env-file
+        emptyDir: {}
