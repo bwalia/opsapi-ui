@@ -1,0 +1,31 @@
+FROM node:20-alpine AS production
+ENV NODE_ENV production
+
+# Add a work directory
+WORKDIR /app
+
+# Cache and Install dependencies
+COPY package.json .
+#COPY yarn.lock .
+
+RUN apk add curl
+
+RUN yarn install
+
+# Copy app files
+COPY . .
+
+RUN yarn build
+#RUN npm run preview
+
+#RUN curl -IL localhost:8808
+
+#RUN npm install vite -g
+# this works here but not in dockerfile RUN vite build --mode staging so replacing with npm build
+# RUN npm run build
+
+# Expose port
+EXPOSE 8808
+
+# Start the app
+CMD [ "yarn", "dev" ]
