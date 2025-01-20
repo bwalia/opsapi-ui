@@ -24,7 +24,10 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "cp /tmp/secrets/.env /app/.env"]
+                command:
+                  - /bin/sh
+                  - -c
+                  - cp /tmp/secrets/.env /app/.env
 
           volumeMounts:
             - name: {{ .Release.Name }}-vol-{{ .Release.Namespace }}
