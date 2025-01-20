@@ -15,7 +15,7 @@ RUN yarn install
 # Copy app files
 COPY . .
 
-RUN yarn build
+# RUN yarn build
 #RUN npm run preview
 
 #RUN curl -IL localhost:8808
@@ -25,7 +25,7 @@ RUN yarn build
 # RUN npm run build
 
 # Expose port
-EXPOSE 8808
+EXPOSE 80
 
 # Start the app
 CMD [ "yarn", "dev" ]
