@@ -62,4 +62,49 @@ jobs:
         SLACK_MESSAGE: 'OPSAPI UI deployed to https://${{ env.TARGET_ENV }}-ui.opsapi.io/ (${{ env.TARGET_ENV }}) env :rocket:'
         SLACK_TITLE: OPSAPI UI deployment status
         SLACK_USERNAME: rtCamp
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}            
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}         
+        
+  deploy:
+    runs-on: whisky03
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Decode and Export Kubeconfig
+      env:
+        KUBECONFIG_BASE64: ${{ secrets.KUBE_CONFIG_DATA_K3S }}
+      run: |
+        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig
+        export KUBECONFIG=$(pwd)/kubeconfig
+        echo "Kubeconfig decoded and exported successfully."
+
+    - name: Check and Install kubectl
+      run: |
+        if ! command -v kubectl &> /dev/null; then
+          echo "kubectl not found. Installing kubectl..."
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+        else
+          echo "kubectl is already installed."
+        fi
+      shell: bash
+  
+    - name: Check and Install Helm
+      run: |
+        if ! command -v helm &> /dev/null; then
+          echo "Helm not found. Installing Helm..."
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        else
+          echo "Helm is already installed."
+        fi
+      shell: bash
+
+    - name: Deploy Helm Chart
+      run: |
+        export KUBECONFIG=$(pwd)/kubeconfig
+        helm upgrade --install opsapi-ui ./devops/helm-chart \
+          --set image.repository=bwalia/opsapi-ui \
+          --set image.tag=latest \
+          --namespace ${{ env.TARGET_ENV }} --create-namespace
