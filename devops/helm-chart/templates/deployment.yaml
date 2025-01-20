@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Namespace }}
+    app: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Namespace }}
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Namespace }}
+        app: {{ .Release.Name }}
     spec:
       containers:
-      - name: {{ .Release.Namespace }}
+      - name: {{ .Release.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -24,10 +24,10 @@ spec:
         - name: VITE_API_URL
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Namespace }}-secrets
+              name: {{ .Release.Name }}-secrets
               key: VITE_API_URL
         - name: VITE_LOGIN_SERVER
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Namespace }}-secrets
+              name: {{ .Release.Name }}-secrets
               key: VITE_LOGIN_SERVER
