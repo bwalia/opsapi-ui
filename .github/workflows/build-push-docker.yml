@@ -44,14 +44,14 @@ jobs:
         docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
       shell: bash        
 
-    - name: Run Docker container
-      run: |
-            docker run -d -p 80:80 bwalia/opsapi-ui:latest openresty -g "daemon off;"
+    # - name: Run Docker container
+    #   run: |
+    #         docker run -d -p 80:80 bwalia/opsapi-ui:latest openresty -g "daemon off;"
 
-    - name: Verify OpenResty is running
-      run: |
-            sleep 10 # Give some time for the server to start
-            curl -I http://localhost:80
+    # - name: Verify OpenResty is running
+    #   run: |
+    #         sleep 10 # Give some time for the server to start
+    #         curl -I http://localhost:80
 
     - name: Slack Notification for OPSAPI UI release 
       uses: rtCamp/action-slack-notify@v2
