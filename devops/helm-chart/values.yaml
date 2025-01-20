@@ -18,8 +18,7 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-  tls:
-    enable: false
+  tls: []
 
 secrets:
   VITE_API_URL: "AgBslhB7vs2oSfgH2bPV3FX/ZUR3njgWal/bwkU74YWZcPDOj+PDWLB6X+38jsxXWsljXaBTeohKGCZjvm9xrjD7iKnHHQpXtd83ln60/eYw2ece6CRmEsDECDFs445ng/iBTfPDImeI3Im6WapykgIcGe2xQoXxXfiy2z04iaycrLHf6QGHt9uZtYuSu56zME12z3kvvX4Tmx+dUGUe1DaioPgf5MJgyvHYPUKiGXB6OuR17DanI0VgxxgU9PAd1V5qxPavPHy2sQxs6CMVQXoI1kP/CjLj+Q7rtecOg57aPyRkb7A67hYx4ALpwl+stgi64Ub0tps6/bRuqrGDpowuUSjuYlt+0LW7/R+s5rQP5wSfQuG9etKP/0Pw1E2vlmLfYUd3i4Ewe3RknQIWFBxP6MZXmjrNCCs1Sz8NxFS9SuLIZMbFB+YxYDfRgfu+PXN4hDiuBiEoVCWrHAf5uLHpgm6fDti3QgnpLUSJw/sklPRzX5B5Gh2Fdi5VJShPiqdiEZoAQMtA8UNNR+valOdVBLMipM3RTYOtSjzFU5Jr2r33JLLd6hyfPsIq89vdFmD/UO0Zi/ImV+pz9Hzh8StkdzMKN88hYQ/pEVL/lucsQn/no0J24Q62ergfT9enQNH0x1WuLCpAF7JujjGe7tw75MEsbEqe/L4hQA5sO5AaZOIVJRbTM0FkijGTIlEM60EQTLl/B+Z0rbgbn1PhH2QzSrer1xkRNJNu1o0u"
