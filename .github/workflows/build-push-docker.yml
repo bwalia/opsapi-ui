@@ -65,8 +65,9 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}         
         
   deploy:
+    name: Deploy Helm Chart
     runs-on: whisky03
-
+    needs: [ build ]
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -103,7 +104,6 @@ jobs:
 
     - name: Deploy Helm Chart
       run: |
-        export KUBECONFIG=$(pwd)/kubeconfig
         helm upgrade --install opsapi-ui ./devops/helm-chart \
           --set image.repository=bwalia/opsapi-ui \
           --set image.tag=latest \
