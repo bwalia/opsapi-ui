@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+.env*
+
+sealed-secret.yaml
+secret.yaml
