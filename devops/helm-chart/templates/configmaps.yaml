@@ -8,7 +8,7 @@ data:
         #!/bin/bash
         set -x
 
-        FILE=/usr/share/nginx/html/.env
+        FILE=/usr/share/nginx/app/.env
         cp /tmp/secrets/.env $FILE
         echo "==========================="
         echo "nginx opsapi ui Src copy to /var/www/html Complete"
@@ -23,4 +23,5 @@ data:
         echo "==========================="
         echo "Restart nginx nginx"
         echo "Rebuilding yarn"
-        cd /usr/share/nginx/html && yarn build
+        cd /usr/share/nginx/app && yarn build
+        cp /usr/share/nginx/app/dist/ /usr/share/nginx/html/
