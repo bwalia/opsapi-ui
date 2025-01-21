@@ -21,7 +21,6 @@ data:
         echo "==========================="
         echo "Update nginx config file for this opsapi ui env"
         echo "==========================="
-        echo "Restart nginx nginx"
         echo "Rebuilding yarn"
         cd /usr/share/nginx/app && yarn build
-        cp /usr/share/nginx/app/dist/ /usr/share/nginx/html/
+        cp -r /usr/share/nginx/app/dist/. /usr/share/nginx/html/
