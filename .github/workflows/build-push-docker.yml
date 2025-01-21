@@ -33,7 +33,7 @@ env:
     TARGET_STACK: react_admin
     IMAGE_NAME: opsapi-ui
     TARGET_IMAGE_TAG: latest
-    TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
+    TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'test' }}
     DEPLOYMENT_TYPE: ${{ github.event.inputs.DEPLOYMENT_TYPE || 'build-and-deploy' }}
 
 jobs:
