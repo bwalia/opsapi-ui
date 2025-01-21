@@ -14,10 +14,32 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      volumes:
+        - name: {{ .Release.Name }}-cm-{ .Release.Namespace }}-vol
+          # Populate the volume with config map data
+          configMap:
+            # `name` here must match the name 
+            # specified in the ConfigMap's YAML 
+            name: {{ .Release.Name }}-cm-{ .Release.Namespace }}
+        - name: {{ .Release.Name }}-vol-{{ .Release.Namespace }}
+          secret:
+            secretName: "{{ .Release.Name }}-secrets"
+            items:
+            - key: env_file
+              path: .env
       containers:
       - name: {{ .Release.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/bootstrap-openresty.sh /usr/local/bin/bootstrap-openresty.sh && chmod +x /usr/local/bin/bootstrap-openresty.sh && bash /usr/local/bin/bootstrap-openresty.sh"]
+        volumeMounts:
+          - name: {{ .Release.Name }}-cm-{ .Release.Namespace }}-vol
+            mountPath: /tmp/configmap
+          - name: {{ .Release.Name }}-vol-{{ .Release.Namespace }}
+            mountPath: /tmp/secrets
         ports:
         - containerPort: 80
         env:
