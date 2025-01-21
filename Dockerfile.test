@@ -1,19 +1,18 @@
 FROM node:20-alpine AS production
-ENV NODE_ENV production
 
 # Add a work directory
 WORKDIR /app
 
-# Cache and Install dependencies
-COPY package.json .
-#COPY yarn.lock .
+RUN apk add --no-cache yarn
 
-RUN apk add curl
-
+# Install app dependencies
+COPY package.json yarn.lock ./
 RUN yarn install
 
-# Copy app files
+# Copy the rest of the application code
 COPY . .
+
+# Copy app files
 
 # RUN yarn build
 #RUN npm run preview
@@ -25,7 +24,6 @@ COPY . .
 # RUN npm run build
 
 # Expose port
-EXPOSE 80
 
 # Start the app
-CMD [ "yarn", "dev" ]
+CMD ["yarn", "dev", "--host", "0.0.0.0"]

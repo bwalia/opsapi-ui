@@ -4,15 +4,14 @@ services:
   react-admin:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.test
     ports:
-      - "5100:80"
+      - "5100:5173"
     environment:
       - VITE_LOGIN_SERVER=http://localhost:4010
       - VITE_API_URL=http://localhost:4010/api/v2
     volumes:
-      - ./src:/src
-      - ./public:/public
-      - /app/node_modules # Prevent overwriting node_modules with a blank local folder
+      - .:/app
+      - /app/node_modules
     stdin_open: true
     tty: true
