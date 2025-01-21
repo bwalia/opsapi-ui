@@ -14,19 +14,6 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
-      volumes:
-        - name: {{ .Release.Name }}-cm-{{ .Release.Namespace }}-vol
-          # Populate the volume with config map data
-          configMap:
-            # `name` here must match the name 
-            # specified in the ConfigMap's YAML 
-            name: {{ .Release.Name }}-cm-{{ .Release.Namespace }}
-        - name: {{ .Release.Name }}-vol-{{ .Release.Namespace }}
-          secret:
-            secretName: "{{ .Release.Name }}-secrets"
-            items:
-            - key: env_file
-              path: .env
       containers:
       - name: {{ .Release.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -42,14 +29,27 @@ spec:
             mountPath: /tmp/secrets
         ports:
         - containerPort: 80
-        env:
-        - name: VITE_API_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-secrets
-              key: VITE_API_URL
-        - name: VITE_LOGIN_SERVER
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-secrets
-              key: VITE_LOGIN_SERVER
+        # env:
+        # - name: VITE_API_URL
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: {{ .Release.Name }}-secrets
+        #       key: VITE_API_URL
+        # - name: VITE_LOGIN_SERVER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: {{ .Release.Name }}-secrets
+        #       key: VITE_LOGIN_SERVER
+      volumes:
+        - name: {{ .Release.Name }}-cm-{{ .Release.Namespace }}-vol
+          # Populate the volume with config map data
+          configMap:
+            # `name` here must match the name 
+            # specified in the ConfigMap's YAML 
+            name: {{ .Release.Name }}-cm-{{ .Release.Namespace }}
+        - name: {{ .Release.Name }}-vol-{{ .Release.Namespace }}
+          secret:
+            secretName: "{{ .Release.Name }}-secrets"
+            items:
+            - key: env_file
+              path: .env
