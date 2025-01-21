@@ -1,29 +1,14 @@
-FROM node:20-alpine AS production
+# Dockerfile
+FROM node:20-alpine AS builder
 
-# Add a work directory
 WORKDIR /app
-
-RUN apk add --no-cache yarn
-
-# Install app dependencies
-COPY package.json yarn.lock ./
+COPY package*.json ./
 RUN yarn install
-
-# Copy the rest of the application code
 COPY . .
+RUN yarn build
 
-# Copy app files
-
-# RUN yarn build
-#RUN npm run preview
-
-#RUN curl -IL localhost:8808
-
-#RUN npm install vite -g
-# this works here but not in dockerfile RUN vite build --mode staging so replacing with npm build
-# RUN npm run build
-
-# Expose port
-
-# Start the app
-# CMD ["yarn", "dev", "--host", "0.0.0.0"]
+# Production image
+FROM nginx:1.27-alpine
+COPY --from=builder /app/ /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
