@@ -6,6 +6,10 @@ import authProvider from "./authProvider";
 import './App.css';
 import Users from "./Users";
 import Roles from "./Roles";
+import Groups from "./Groups"
+import Modules from "./Modules"
+import Projects from "./Projects"
+import Templates from "./Templates"
 
 function App() {
   const apiURL = import.meta.env.VITE_API_URL
@@ -13,6 +17,10 @@ function App() {
     <Admin dataProvider={dataProvider(apiURL)} authProvider={authProvider} loginPage={false}>
       <Resource name="users" {...Users} />
       <Resource name="roles" {...Roles} />
+      <Resource name="groups" {...Groups} />
+      <Resource name="modules" {...Modules} />
+      <Resource name="projects" {...Projects} />
+      <Resource name="templates" {...Templates} />
     </Admin>
   )
 }
