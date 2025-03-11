@@ -1,34 +1,53 @@
-import React from 'react';
-import { SimpleForm, TextInput, DateInput, required } from 'react-admin';
-import { Grid2, Box } from '@mui/material';
+import React from "react";
+import {
+  SimpleForm,
+  TextInput,
+  ReferenceArrayInput,
+  AutocompleteArrayInput,
+  required,
+} from "react-admin";
+import { Grid2, Box } from "@mui/material";
+
+export const formatFunc = (tags) => tags.map((tag) => tag.id);
+
+export const parseFunc = (tagIds) => tagIds.map((id) => ({ id }));
 
 const Form = () => {
   return (
     <SimpleForm>
-      <Box sx={{ flexGrow: 1, width: '100%' }}>
+      <Box sx={{ flexGrow: 1, width: "100%" }}>
         <Grid2 container spacing={2}>
           <Grid2 size={{ xs: 12, md: 6 }}>
-            <TextInput source="username" validate={[required()]} />
+            <TextInput source="code" validate={[required()]} />
           </Grid2>
           <Grid2 size={{ xs: 12, md: 6 }}>
-            <TextInput type='email' source="email" validate={[required()]} />
+            <TextInput source="template_type" />
           </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
-            <TextInput source="first_name" validate={[required()]} />
+          <Grid2 size={{ xs: 12, md: 12 }}>
+            <ReferenceArrayInput reference="projects" source="projects" label="Projects">
+              <AutocompleteArrayInput
+                optionText={"name"}
+                format={formatFunc}
+                parse={parseFunc}
+                filterToQuery={(q) => ({ name: q })}
+              />
+            </ReferenceArrayInput>
           </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
-            <TextInput source="last_name" validate={[required()]} />
+          <Grid2 size={{ xs: 12, md: 12 }}>
+            <TextInput
+              source="template_content"
+              multiline
+              rows={20}
+              validate={[required()]}
+            />
           </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
-            <TextInput source="phone_no" validate={[required()]} />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
-            <TextInput type='password' source="password" validate={[required()]} />
+          <Grid2 size={{ xs: 12, md: 12 }}>
+            <TextInput source="description" multiline rows={4} />
           </Grid2>
         </Grid2>
       </Box>
     </SimpleForm>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;

@@ -5,8 +5,8 @@ const List = () => {
     return (
         <RaList>
             <SimpleList
-                primaryText={record => record.code}
-                secondaryText={record => record.description	}
+                primaryText={record => record.role_name}
+                secondaryText={`role`}
                 tertiaryText={record => new Date(record.created_at).toLocaleDateString()}
                 linkType={record => record.canEdit ? "edit" : "show"}
             />
