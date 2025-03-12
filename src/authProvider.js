@@ -68,7 +68,7 @@ export default {
             localStorage.setItem("user", JSON.stringify(decoded.userinfo));
             localStorage.setItem("token_response", JSON.stringify(decoded.token_response));
 
-            // urlParams.delete('token');
+            urlParams.delete('token');
         }
     },
     async logout() {
