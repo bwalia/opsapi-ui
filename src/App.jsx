@@ -11,6 +11,7 @@ import Modules from "./Modules";
 import Projects from "./Projects";
 import Templates from "./Templates";
 import Secrets from "./Secrets";
+import Documents from "./Documents";
 
 function App() {
   const apiURL = import.meta.env.VITE_API_URL
@@ -23,6 +24,7 @@ function App() {
       <Resource name="projects" {...Projects} />
       <Resource name="templates" {...Templates} />
       <Resource name="secrets" {...Secrets} />
+      <Resource name="documents" {...Documents} />
     </Admin>
   )
 }
