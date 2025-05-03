@@ -3,7 +3,7 @@ import jsonServerProvider from "ra-data-json-server";
 import dataProvider from "./dataProvider";
 import authProvider from "./authProvider";
 
-import './App.css';
+import "./App.css";
 import Users from "./Users";
 import Roles from "./Roles";
 import Groups from "./Groups";
@@ -14,9 +14,13 @@ import Secrets from "./Secrets";
 import Documents from "./Documents";
 
 function App() {
-  const apiURL = import.meta.env.VITE_API_URL
+  const apiURL = import.meta.env.VITE_API_URL;
   return (
-    <Admin dataProvider={dataProvider(apiURL)} authProvider={authProvider} loginPage={false}>
+    <Admin
+      dataProvider={dataProvider(apiURL)}
+      authProvider={authProvider}
+      loginPage={false}
+    >
       <Resource name="users" {...Users} />
       <Resource name="roles" {...Roles} />
       <Resource name="groups" {...Groups} />
@@ -26,7 +30,7 @@ function App() {
       <Resource name="secrets" {...Secrets} />
       <Resource name="documents" {...Documents} />
     </Admin>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -81,6 +81,15 @@ const dataProvider = (apiUrl) => {
 
     create: async (resource, params) => {
       const options = headerOptions();
+      console.log({resource});
+      
+      if (resource == "documents") {
+        const userObj = localStorage.getItem('user');
+        if (userObj) {
+            const user = JSON.parse(userObj);
+            params.data.user_id = user.sub;
+        }
+      }
       const { json } = await httpClient(`${apiUrl}/${resource}`, {
         method: "POST",
         body: new URLSearchParams(params.data),

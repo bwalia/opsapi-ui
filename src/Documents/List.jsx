@@ -1,15 +1,16 @@
 import React from 'react';
-import { List as RaList, SimpleList } from 'react-admin';
+import { BooleanField, Datagrid, DateField, List as RaList, SimpleList, TextField } from 'react-admin';
 
 const List = () => {
     return (
         <RaList>
-            <SimpleList
-                primaryText={record => record.role_name}
-                secondaryText={`role`}
-                tertiaryText={record => new Date(record.created_at).toLocaleDateString()}
-                linkType={record => record.canEdit ? "edit" : "show"}
-            />
+        <Datagrid>
+            <TextField source="title" />
+            <TextField source="slug" />
+            <DateField source="published_date" />
+            <TextField source="sub_title" />
+            <BooleanField source="status" />
+        </Datagrid>
         </RaList>
     )
 }
