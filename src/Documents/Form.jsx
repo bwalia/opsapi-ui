@@ -12,7 +12,7 @@ import {
   AutocompleteArrayInput,
 } from "react-admin";
 import { Grid2, Box } from "@mui/material";
-import CreateTags from "../components/CreateTags";
+// import { height, width } from "@mui/system";
 // import { RichTextInput } from "ra-input-rich-text";
 
 const Form = () => {
@@ -57,7 +57,7 @@ const Form = () => {
                   const newTag = await create("tags", {
                     data: { name: inputValue },
                   });
-                  return newTag.data;
+                  return newTag;
                 }}
               />
             </ReferenceArrayInput>
@@ -76,7 +76,7 @@ const Form = () => {
             <TextInput source="excerpt" multiline />
           </Grid2>
           <Grid2 size={{ xs: 12, md: 12 }}>
-            <TextInput source="content" multiline validate={[required()]} />
+            <TextInput source="content" sx={{ height: 300 }} multiline validate={[required()]} />
           </Grid2>
           <Grid2 size={{ xs: 12, md: 12 }}>
             <BooleanInput source="status" />

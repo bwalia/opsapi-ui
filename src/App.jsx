@@ -19,7 +19,6 @@ function App() {
     <Admin
       dataProvider={dataProvider(apiURL)}
       authProvider={authProvider}
-      loginPage={false}
     >
       <Resource name="users" {...Users} />
       <Resource name="roles" {...Roles} />
