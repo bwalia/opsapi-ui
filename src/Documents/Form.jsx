@@ -10,8 +10,10 @@ import {
   SelectArrayInput,
   ReferenceArrayInput,
   AutocompleteArrayInput,
+  FileInput,
+  FileField,
 } from "react-admin";
-import { Grid2, Box } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 // import { height, width } from "@mui/system";
 // import { RichTextInput } from "ra-input-rich-text";
 
@@ -31,18 +33,18 @@ const Form = () => {
   return (
     <SimpleForm>
       <Box sx={{ flexGrow: 1, width: "100%" }}>
-        <Grid2 container spacing={2}>
-          <Grid2 size={{ xs: 12, md: 6 }}>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextInput source="title" validate={[required()]} />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextInput source="sub_title" validate={[required()]} />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextInput source="slug" />
-          </Grid2>
-          <Grid2 item xs={12} sm={6}>
-            <ReferenceArrayInput source="tags" reference="tags">
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <ReferenceArrayInput source="tags" reference="tags" fullWidth>
               <AutocompleteArrayInput
                 optionText="name"
                 fullWidth
@@ -61,27 +63,31 @@ const Form = () => {
                 }}
               />
             </ReferenceArrayInput>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 12 }}>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <FileInput source="cover_image">
+              <FileField source="src" title="Cover Image" />
+            </FileInput>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
             <TextInput source="meta_title" />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 12 }}>
-            {/* <TextInput source="meta_description" multiline /> */}
-            {/* <RichTextInput source="meta_description" /> */}
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 12 }}>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <TextInput source="meta_description" multiline />
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
             <TextInput source="meta_keywords" multiline />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 12 }}>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
             <TextInput source="excerpt" multiline />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 12 }}>
-            <TextInput source="content" sx={{ height: 300 }} multiline validate={[required()]} />
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 12 }}>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <TextInput source="content" multiline validate={[required()]} />
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
             <BooleanInput source="status" />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Box>
     </SimpleForm>
   );
