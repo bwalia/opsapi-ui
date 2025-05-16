@@ -13,7 +13,7 @@ const headerOptions = () => {
     new Headers({
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/x-www-form-urlencoded",
+      // "Content-Type": "multipart/form-data",
     });
   options.headers = customHeaders;
   return options;
@@ -81,9 +81,27 @@ const dataProvider = (apiUrl) => {
 
     create: async (resource, params) => {
       const options = headerOptions();
+      console.log({ resource });
+
+      const formData = new FormData();
+      for (const key in params.data) {
+        if (key === 'cover_image' && params.data[key].rawFile) {
+          formData.append('cover_image', params.data[key].rawFile, params.data[key].title);
+        } else {
+          formData.append(key, params.data[key]);
+        }
+      }
+
+      if (resource == "documents") {
+        const userObj = localStorage.getItem('user');
+        if (userObj) {
+          const user = JSON.parse(userObj);
+          formData.append('user_id', user.sub);
+        }
+      }
       const { json } = await httpClient(`${apiUrl}/${resource}`, {
         method: "POST",
-        body: new URLSearchParams(params.data),
+        body: formData,
         ...options,
       });
       return json;
@@ -94,7 +112,7 @@ const dataProvider = (apiUrl) => {
       const options = headerOptions();
       const { json, status } = await httpClient(url, {
         method: "PUT",
-        body: new URLSearchParams({data: JSON.stringify(params.data)}),
+        body: new URLSearchParams({ data: JSON.stringify(params.data) }),
         ...options,
       });
 

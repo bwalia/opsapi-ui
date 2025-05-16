@@ -1,24 +1,28 @@
 import { jwtDecode } from "jwt-decode";
-import { fetchUtils } from 'react-admin';
+import { fetchUtils } from "react-admin";
 const httpClient = fetchUtils.fetchJson;
 
 const headerOptions = () => {
-    const options = {}
-    const customHeaders = (options.headers ||
+    const options = {};
+    const customHeaders =
+        options.headers ||
         new Headers({
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }));
+            "Content-Type": "application/x-www-form-urlencoded",
+        });
     options.headers = customHeaders;
     return options;
-}
+};
 
 export default {
     async login({ username, password }) {
-        const loginUrl = import.meta.env.VITE_LOGIN_URL
+        const loginUrl = import.meta.env.VITE_LOGIN_URL;
         const request = new Request(loginUrl, {
             method: "POST",
-            body: JSON.stringify({ username, password }),
-            headers: new Headers({ "Content-Type": "application/json" }),
+            body: new URLSearchParams({ username, password }),
+            headers: new Headers({
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }),
         });
         let response;
         try {
@@ -30,6 +34,8 @@ export default {
             throw new Error(response.statusText);
         }
         const auth = await response.json();
+        console.log({ auth });
+
         localStorage.setItem("auth", auth.token);
         localStorage.setItem("permissions", JSON.stringify(auth.permissions));
         localStorage.setItem("user", JSON.stringify(auth.user));
@@ -50,55 +56,70 @@ export default {
             localStorage.removeItem("permissions");
             localStorage.removeItem("role");
             Promise.reject(error.body.data);
-
         }
         // other error codes (404, 500, etc): no need to log out
     },
-    async checkAuth() {
-        const { protocol, hostname, port } = window.location;
-        const baseURL = port ? `${protocol}//${hostname}:${port}` : `${protocol}//${hostname}`;
-        const loginServer = import.meta.env.VITE_LOGIN_SERVER
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        if (!token && !localStorage.getItem('auth')) {
-            throw { redirectTo: `${loginServer}/auth/login?from=${baseURL}` };
-        } else {
-            const decoded = jwtDecode(token);
-            localStorage.setItem("auth", token);
-            localStorage.setItem("user", JSON.stringify(decoded.userinfo));
-            localStorage.setItem("token_response", JSON.stringify(decoded.token_response));
+    //   async checkAuth() {
+    //     const { protocol, hostname, port } = window.location;
+    //     const baseURL = port
+    //       ? `${protocol}//${hostname}:${port}`
+    //       : `${protocol}//${hostname}`;
+    //     const loginServer = import.meta.env.VITE_LOGIN_SERVER;
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const token = urlParams.get("token") ?? localStorage.getItem("auth");
+    //     const isKeycloak = urlParams.get("keycloak");
+    //     if (!token && !localStorage.getItem("auth") && isKeycloak) {
+    //         return
+    //       //   return { redirectTo: `${loginServer}/auth/login?from=${baseURL}` };
+    //     } else {
+    //         return
+    //       const decoded = jwtDecode(token);
+    //       localStorage.setItem("auth", token);
+    //       localStorage.setItem("user", JSON.stringify(decoded.userinfo));
+    //       localStorage.setItem(
+    //         "token_response",
+    //         JSON.stringify(decoded.token_response)
+    //       );
 
-            urlParams.delete('token');
+    //       urlParams.delete("token");
+    //     }
+    //   },
+
+    async checkAuth() {
+        if (!localStorage.getItem('auth')) {
+            throw new Error('Not authenticated');
         }
     },
     async logout() {
-        const loginServer = import.meta.env.VITE_LOGIN_SERVER
-        const userObj = localStorage.getItem('user');
+        const loginServer = import.meta.env.VITE_LOGIN_SERVER;
+        const userObj = localStorage.getItem("user");
         if (userObj) {
             const user = JSON.parse(userObj);
-            const url = `${loginServer}/auth/logout`
+            const url = `${loginServer}/auth/logout`;
             try {
-                let tokenResp = localStorage.getItem("token_response")
+                let tokenResp = localStorage.getItem("token_response");
                 if (!!tokenResp && tokenResp != "undefined") {
-                    tokenResp = JSON.parse(tokenResp)
+                    tokenResp = JSON.parse(tokenResp);
                     const postData = {
-                        "refreshToken": tokenResp.refresh_token,
-                        "accessToken": tokenResp.access_token
-                    }
+                        refreshToken: tokenResp.refresh_token,
+                        accessToken: tokenResp.access_token,
+                    };
                     const options = headerOptions();
                     const { status, json, headers } = await httpClient(url, {
-                        method: 'POST',
+                        method: "POST",
                         body: new URLSearchParams(postData),
-                        ...options
+                        ...options,
                     });
                     console.log({
                         status,
                         json,
                     });
-                    
+
                     if (status == 204) {
                         const { protocol, hostname, port } = window.location;
-                        const baseURL = port ? `${protocol}//${hostname}:${port}` : `${protocol}//${hostname}`;
+                        const baseURL = port
+                            ? `${protocol}//${hostname}:${port}`
+                            : `${protocol}//${hostname}`;
                         localStorage.removeItem("auth");
                         localStorage.removeItem("user");
                         localStorage.removeItem("token_response");
@@ -111,6 +132,11 @@ export default {
                 }
             } catch (_error) {
                 console.log({ _error });
+                if (_error.status >= 522) {
+                    localStorage.removeItem("auth");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token_response");
+                }
                 throw new Error(_error);
             }
         }
