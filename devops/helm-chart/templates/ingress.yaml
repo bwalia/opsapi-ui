@@ -19,7 +19,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: opsapi-ui-service
+                name: {{ .Release.Name }}-ingress
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
