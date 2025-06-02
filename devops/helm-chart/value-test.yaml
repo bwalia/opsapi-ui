@@ -1,5 +1,8 @@
 replicaCount: 1
 
+name: opsapi-ui
+environment: test
+
 image:
   repository: bwalia/opsapi-ui
   tag: latest
