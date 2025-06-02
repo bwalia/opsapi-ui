@@ -19,7 +19,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ .Values.app_name }}-{{ .Values.app_environment }}-service
+                name: {{ $.Values.app_name }}-{{ $.Values.app_environment }}-service
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
