@@ -1,7 +1,7 @@
 replicaCount: 1
 
-name: opsapi-ui
-environment: test
+app_name: opsapi-ui
+app_environment: test
 
 image:
   repository: bwalia/opsapi-ui
