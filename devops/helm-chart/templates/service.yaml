@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-service
+  name: {{ .Values.app_name }}-{{ .Values.app_environment }}-service
   labels:
-    app: {{ .Release.Name }}
+    app: {{ .Values.app_name }}-{{ .Values.app_environment }}
 spec:
   selector:
     app: {{ .Release.Name }}
