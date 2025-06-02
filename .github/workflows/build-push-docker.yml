@@ -121,7 +121,7 @@ jobs:
     - name: Deploy Helm Chart
       if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
-        helm upgrade --install opsapi-ui-${{ env.TARGET_ENV }} -f value-${{ env.TARGET_ENV }}.yaml ./devops/helm-chart \
+        helm upgrade --install opsapi-ui-${{ env.TARGET_ENV }} -f ./devops/helm-chart/value-${{ env.TARGET_ENV }}.yaml ./devops/helm-chart \
           --set image.repository=bwalia/opsapi-ui \
           --set image.tag=latest \
           --namespace ${{ env.TARGET_ENV }} --create-namespace
