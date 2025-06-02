@@ -17,6 +17,7 @@ data:
         export VITE_DEPLOYMENT_TIME=$DATE_GEN_VERSION
         VITE_DEPLOYMENT_TIME=$DATE_GEN_VERSION
         echo "==========================="
+        echo "" >> $FILE
         echo "VITE_DEPLOYMENT_TIME=$DATE_GEN_VERSION" >> $FILE
         echo "==========================="
         echo "Update nginx config file for this opsapi ui env"
