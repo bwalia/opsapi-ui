@@ -15,7 +15,7 @@ import {
 } from "react-admin";
 import { Grid, Box } from "@mui/material";
 // import { height, width } from "@mui/system";
-// import { RichTextInput } from "ra-input-rich-text";
+import { RichTextInput } from "ra-input-rich-text";
 
 const Form = () => {
   const secretTags = localStorage.getItem("secrets.tags") || "";
@@ -73,16 +73,16 @@ const Form = () => {
             <TextInput source="meta_title" />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
-            <TextInput source="meta_description" multiline />
+            <RichTextInput source="meta_description" />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
             <TextInput source="meta_keywords" multiline />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
-            <TextInput source="excerpt" multiline />
+            <RichTextInput source="excerpt" />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
-            <TextInput source="content" multiline validate={[required()]} />
+            <RichTextInput source="content" validate={[required()]} />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
             <BooleanInput source="status" />
