@@ -82,7 +82,15 @@ const Form = () => {
             <RichTextInput source="excerpt" />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
-            <RichTextInput source="content" validate={[required()]} />
+            <RichTextInput
+              source="content"
+              sx={{
+                "& .RaRichTextInput-editorContent > .ProseMirror": {
+                  height: "50vh",
+                },
+              }}
+              validate={[required()]}
+            />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
             <BooleanInput source="status" />
