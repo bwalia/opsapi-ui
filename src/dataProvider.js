@@ -81,22 +81,25 @@ const dataProvider = (apiUrl) => {
 
     create: async (resource, params) => {
       const options = headerOptions();
-      console.log({ resource });
 
       const formData = new FormData();
       for (const key in params.data) {
-        if (key === 'cover_image' && params.data[key].rawFile) {
-          formData.append('cover_image', params.data[key].rawFile, params.data[key].title);
+        if (key === "cover_image" && params.data[key].rawFile) {
+          formData.append(
+            "cover_image",
+            params.data[key].rawFile,
+            params.data[key].title
+          );
         } else {
           formData.append(key, params.data[key]);
         }
       }
 
       if (resource == "documents") {
-        const userObj = localStorage.getItem('user');
+        const userObj = localStorage.getItem("user");
         if (userObj) {
           const user = JSON.parse(userObj);
-          formData.append('user_id', user.sub);
+          formData.append("user_id", user.sub);
         }
       }
       const { json } = await httpClient(`${apiUrl}/${resource}`, {
@@ -154,7 +157,7 @@ const dataProvider = (apiUrl) => {
         body: JSON.stringify(params.data),
         ...options,
       });
-      return { data: json };
+      return json;
     },
   };
 };
