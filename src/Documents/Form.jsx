@@ -16,6 +16,7 @@ import {
 import { Grid, Box } from "@mui/material";
 // import { height, width } from "@mui/system";
 import { RichTextInput } from "ra-input-rich-text";
+import WYSIWYGInput from "../components/common/WYSIWYGInput";
 
 const Form = () => {
   const secretTags = localStorage.getItem("secrets.tags") || "";
@@ -82,14 +83,10 @@ const Form = () => {
             <RichTextInput source="excerpt" />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
-            <RichTextInput
+            <WYSIWYGInput
               source="content"
-              sx={{
-                "& .RaRichTextInput-editorContent > .ProseMirror": {
-                  height: "50vh",
-                },
-              }}
-              validate={[required()]}
+              label="Content"
+              validate={required("Content is required")}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
