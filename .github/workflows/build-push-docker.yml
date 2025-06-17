@@ -79,7 +79,7 @@ jobs:
         
   deploy:
     name: Deploy Helm Chart
-    runs-on: whisky03
+    runs-on: ubworker00
     needs: [ build ]
     steps:
     - name: Checkout code
