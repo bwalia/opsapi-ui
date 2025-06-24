@@ -46,7 +46,7 @@ const dataProvider = (apiUrl) => {
       const url = `${apiUrl}/${resource}/${params.id}`;
       const options = headerOptions();
       const { json } = await httpClient(url, options);
-      return { data: json };
+      return json;
     },
 
     getMany: async (resource, params) => {
@@ -113,9 +113,21 @@ const dataProvider = (apiUrl) => {
     update: async (resource, params) => {
       const url = `${apiUrl}/${resource}/${params.id}`;
       const options = headerOptions();
+      const formData = new FormData();
+      for (const key in params.data) {
+        if (key === "cover_image" && params.data[key].rawFile) {
+          formData.append(
+            "cover_image",
+            params.data[key].rawFile,
+            params.data[key].title
+          );
+        } else {
+          formData.append(key, params.data[key]);
+        }
+      }
       const { json, status } = await httpClient(url, {
         method: "PUT",
-        body: new URLSearchParams({ data: JSON.stringify(params.data) }),
+        body: formData,
         ...options,
       });
 
