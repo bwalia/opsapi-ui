@@ -12,14 +12,12 @@ import Projects from "./Projects";
 import Templates from "./Templates";
 import Secrets from "./Secrets";
 import Documents from "./Documents";
+import Enquiries from "./Enquiries";
 
 function App() {
   const apiURL = import.meta.env.VITE_API_URL;
   return (
-    <Admin
-      dataProvider={dataProvider(apiURL)}
-      authProvider={authProvider}
-    >
+    <Admin dataProvider={dataProvider(apiURL)} authProvider={authProvider}>
       <Resource name="users" {...Users} />
       <Resource name="roles" {...Roles} />
       <Resource name="groups" {...Groups} />
@@ -28,6 +26,7 @@ function App() {
       <Resource name="templates" {...Templates} />
       <Resource name="secrets" {...Secrets} />
       <Resource name="documents" {...Documents} />
+      <Resource name="enquiries" {...Enquiries} />
     </Admin>
   );
 }
