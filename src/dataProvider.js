@@ -46,7 +46,7 @@ const dataProvider = (apiUrl) => {
       const url = `${apiUrl}/${resource}/${params.id}`;
       const options = headerOptions();
       const { json } = await httpClient(url, options);
-      return json;
+      return { data: json };
     },
 
     getMany: async (resource, params) => {
