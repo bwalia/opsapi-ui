@@ -1,0 +1,36 @@
+# Dockerfile
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+RUN apk add --no-cache yarn
+
+# Install app dependencies
+COPY package.json yarn.lock ./
+RUN yarn install
+COPY . .
+RUN yarn build
+
+# Production image
+FROM nginx:1.27-alpine
+RUN mkdir -p /usr/share/nginx/app
+COPY --from=builder /app/ /usr/share/nginx/app/
+
+# Install required packages
+RUN apk add --no-cache \
+    libc6-compat \
+    curl \
+    git \
+    bash
+
+
+RUN apk add --update nodejs npm
+RUN npm install yarn -g
+
+# Verify installations
+RUN node --version
+RUN npm --version
+
+# Clean up package cache
+RUN rm -rf /var/cache/apk/*
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
