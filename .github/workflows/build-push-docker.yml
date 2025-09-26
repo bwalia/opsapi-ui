@@ -1,4 +1,4 @@
-name: Docker OPSAPI UI Image build and Push
+name: Build, Push and Deploy OPSAPI-UI
 
 on:
   push:
@@ -35,17 +35,15 @@ env:
     TARGET_IMAGE_TAG: latest
     TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'test' }}
     DEPLOYMENT_TYPE: ${{ github.event.inputs.DEPLOYMENT_TYPE || 'build-and-deploy' }}
+    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-
     - name: Checkout code
       if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       uses: actions/checkout@v3
-
     - name: Build OPSAPI UI Docker image based on the TARGET PLATFORM Image and push to Docker Hub
       if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
@@ -84,7 +82,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
     - name: Decode and Export Kubeconfig
       if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       env:
@@ -93,7 +90,23 @@ jobs:
         echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig
         export KUBECONFIG=$(pwd)/kubeconfig
         echo "Kubeconfig decoded and exported successfully."
-
+      shell: bash
+    - name: Kubeseal encrypt the env secrets file
+      if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
+      run: |
+          export KUBECONFIG=$(pwd)/kubeconfig
+          if [ "${{ env.TARGET_ENV }}" == "dev" ]; then
+              ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_OPSAPI_UI_ENV_CREDS_DEV }} "dev"
+          elif [ "${{ env.TARGET_ENV }}" == "test" ]; then
+              ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_OPSAPI_UI_ENV_CREDS_TEST }} "test"
+          elif [ "${{ env.TARGET_ENV }}" == "acc" ]; then
+              ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_OPSAPI_UI_ENV_CREDS_ACC }} "acc"
+          elif [ "${{ env.TARGET_ENV }}" == "prod" ]; then
+              ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_OPSAPI_UI_ENV_CREDS_PROD }} "prod"
+          else
+              ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_OPSAPI_UI_ENV_CREDS_INT }} "int"
+          fi
+      shell: bash      
     - name: Check and Install kubectl
       if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
@@ -121,6 +134,7 @@ jobs:
     - name: Deploy Helm Chart
       if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
+        export KUBECONFIG=$(pwd)/kubeconfig
         echo "Deploying Helm Chart for OPSAPI UI in the ${{ env.TARGET_ENV }} environment."
         echo "Using values file: ./devops/helm-chart/values-${{ env.TARGET_ENV }}.yaml"
         echo "Helm Chart path: ./devops/helm-chart"
