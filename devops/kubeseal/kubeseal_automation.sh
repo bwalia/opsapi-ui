@@ -26,7 +26,7 @@ else
 fi
 
 if [ -z "$3" ]; then
-    echo "Error: CICD Namespace referenced from 2nd parameter"
+    echo "Notice: CICD Namespace referenced from 2nd parameter"
     CICD_NAMESPACE=$ENV_REF
 else
     CICD_NAMESPACE="$3"
@@ -143,14 +143,24 @@ fi
 
 rm -Rf $SECRET_OUTPUT_PATH
 cp $SECRET_INPUT_PATH $SECRET_OUTPUT_PATH
+if [ ! -f "$SECRET_OUTPUT_PATH" ]; then
+    echo "Error: Sealed secret output file '$SECRET_OUTPUT_PATH' not found!"
+    exit 1
+fi
 
 # Use cross-platform sed replacement using python below
 if [[ "$OS_TYPE" == "macos" ]]; then
-    sed -i '' "s/CICD_NAMESPACE_PLACEHOLDER/$ENV_REF/g" $SECRET_OUTPUT_PATH
+    sed -i '' "s/CICD_NAMESPACE_PLACEHOLDER/$CICD_NAMESPACE/g" $SECRET_OUTPUT_PATH
+    sed -i '' "s/CICD_ENV_REF_PLACEHOLDER/$ENV_REF/g" $SECRET_OUTPUT_PATH
     sed -i '' "s/CICD_ENV_FILE_PLACEHOLDER_BASE64/$ENV_FILE_CONTENT_BASE64/g" $SECRET_OUTPUT_PATH
+elif [[ "$OS_TYPE" == "linux" || "$OS_TYPE" == "ubuntu" ]]; then
+    sed -i "s/CICD_NAMESPACE_PLACEHOLDER/$CICD_NAMESPACE/g" $SECRET_OUTPUT_PATH
+    sed -i "s/CICD_ENV_REF_PLACEHOLDER/$ENV_REF/g" $SECRET_OUTPUT_PATH
+    sed -i "s/CICD_ENV_FILE_PLACEHOLDER_BASE64/$ENV_FILE_CONTENT_BASE64/g" $SECRET_OUTPUT_PATH
 else
-    sed -i "s/CICD_NAMESPACE_PLACEHOLDER/$ENV_REF/g" $SECRET_OUTPUT_PATH
-    sed -i '' "s/CICD_ENV_FILE_PLACEHOLDER_BASE64/$ENV_FILE_CONTENT_BASE64/g" $SECRET_OUTPUT_PATH
+    sed -i "s/CICD_NAMESPACE_PLACEHOLDER/$CICD_NAMESPACE/g" $SECRET_OUTPUT_PATH
+    sed -i "s/CICD_ENV_REF_PLACEHOLDER/$ENV_REF/g" $SECRET_OUTPUT_PATH
+    sed -i "s/CICD_ENV_FILE_PLACEHOLDER_BASE64/$ENV_FILE_CONTENT_BASE64/g" $SECRET_OUTPUT_PATH
 fi
 
 if [ ! -f "$SECRET_OUTPUT_PATH" ]; then
