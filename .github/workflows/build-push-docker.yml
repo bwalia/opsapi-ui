@@ -79,7 +79,7 @@ jobs:
         
   deploy:
     name: Deploy Helm Chart
-    runs-on: ubworker00
+    runs-on: ubuntu-latest
     needs: [ build ]
     steps:
     - name: Checkout code

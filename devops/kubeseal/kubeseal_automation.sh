@@ -115,7 +115,7 @@ ENV_FILE_CONTENT_BASE64_DECODED_FILE="temp.txt"
 
 SECRET_INPUT_PATH="devops/kubeseal/secret_opsapi_ui_per_env_input_template.yaml"
 SECRET_OUTPUT_PATH="devops/kubeseal/secret_opsapi_ui_${ENV_REF}.yaml"
-$SEALED_SECRET_OUTPUT_PATH="/tmp/sealed_secret_opsapi_ui_${ENV_REF}.yaml"
+SEALED_SECRET_OUTPUT_PATH="/tmp/sealed_secret_opsapi_ui_${ENV_REF}.yaml"
 
 if [ ! -f "$ENV_FILE_CONTENT_BASE64_DECODED_FILE" ]; then
     echo "Error: Environment file '$ENV_FILE_CONTENT_BASE64_DECODED_FILE' not found!"
@@ -163,8 +163,8 @@ fi
 echo "Sealing the secret using kubeseal..."
 kubeseal --format yaml < $SECRET_OUTPUT_PATH > $SEALED_SECRET_OUTPUT_PATH
 
-cat $SEALED_SECRET_OUTPUT_PATH
-exit 0
+#   cat $SEALED_SECRET_OUTPUT_PATH
+#   exit 0
 
 # rm -Rf $SECRET_OUTPUT_PATH
 # cat sealed_secret_opsapi_ui_prod.yaml
@@ -178,8 +178,11 @@ if ! command -v yq &> /dev/null; then
     exit 1
 fi
 
-yq .spec.encryptedData.env_file $SEALED_SECRET_OUTPUT_PATH > sealed_secret_opsapi_ui_${ENV_REF}.txt
-echo "Sealed env_file base64 content saved to 'sealed_secret_opsapi_ui_${ENV_REF}.txt'"
+SAFE_SEALEDSECRET_ENCRYPTED=$(yq .spec.encryptedData.env_file $SEALED_SECRET_OUTPUT_PATH)
+
+echo "Sealed env_file extracted to var SAFE_SEALEDSECRET_ENCRYPTED:"
+echo ""
+echo $SAFE_SEALEDSECRET_ENCRYPTED
 # cat sealed_secret_opsapi_ui_prod.txt
 
 HELM_VALUES_INPUT_PATH=devops/helm-chart/values-env-template.yaml
@@ -191,15 +194,6 @@ if [ ! -f "$HELM_VALUES_INPUT_PATH" ]; then
 fi
 
 cp $HELM_VALUES_INPUT_PATH $HELM_VALUES_OUTPUT_PATH
-
-SAFE_SEALEDSECRET_ENCRYPTED=$(<sealed_secret_opsapi_ui_${ENV_REF}.txt)
-
-echo "Sealed secret encrypted value extracted."
-# For debugging, print the sealed secret value
-# echo "Sealed Secret Encrypted Value:"
-echo $SAFE_SEALEDSECRET_ENCRYPTED
-
-exit 0
 
 if python3 --version &> /dev/null; then
     echo "Python3 is installed"
