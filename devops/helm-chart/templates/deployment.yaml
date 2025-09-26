@@ -49,7 +49,7 @@ spec:
             name: {{ .Release.Name }}-cm-{{ .Release.Namespace }}
         - name: {{ .Release.Name }}-vol-{{ .Release.Namespace }}
           secret:
-            secretName: "{{ .Release.Name }}-secrets"
+            secretName: {{ .Release.Name }}-secrets
             items:
             - key: env_file
               path: .env

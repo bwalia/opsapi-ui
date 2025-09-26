@@ -1,0 +1,27 @@
+replicaCount: 1
+
+app_name: opsapi-ui
+app_environment: test
+
+image:
+  repository: bwalia/opsapi-ui
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: test-opsapi-ui.workstation.co.uk
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+secrets:
+  secure_env_file: AgC9aKZsq9K8Ft6iiY8R3jHjbAKp+/ig9dJ019csCPuZ2+0YFbkJ8zq2z7Sv1CNZ7y1TIi9eRbPJdvsdij048ogROms5fuf9PI7U7C319grBDAVXI5CAZUtiR0ZAiNNr9FRx/1frgnUuskGP3HRN1Rhwj8p+wjHAPENz+md2U4veckvfzm/0RYQmMVblooVluAxUxfhUZk+PTxqPPh/EKeQ1xUNhG5TuRtfmWDjWYUZJaJnWaDl51kGncKg4kdLi3ZovbN5vhaZO5cgqP5VTyZQfgCywpdcQQn4X+bR1mMV+zTvyRkuy1J3GePjW07LHoY+/XDtE5Zhw6x8bu0FIpmpwEyws1V/cUeAdwqXfGKaq9aTSxQItbmElaZg/CTXOdaNMCexhF8K5eCIpWOtt9TrC4isK6UfTzVIE9z7K+WUb/jq5Ds+xhZG2mTO4D04V+F2Fsxyvd0+AHiO/I3/5DT2MM5RFRAl667VF9ELRNSFveIMdYH+y33hDFUC4YHruRE5gikmAlHGxPFyu5BgO+rGIpczYWyAnxn4hP76FerrmePXyjl2fdBjh1FxsRQZG3hi8YAgsvY8hD3WsPe1yra1AfmxHMDvIuFU1NJtY6XBgwFekL/0h+l9ATgAfIZtQ86ckygyPE3vtXttBcRCmx2le5Oq5TfD9+UUB7wavHsH7S4vqp2kaUujz6HeAeWLUs33a2/KLexv7m8RUjdiKjRytokNwsCaYFNbC8GMEkp/QYTDjLgihXrTttZvBXjgyk2Uki7Q7kUV7ysDNXu9pIXwtaEz2kEi4mxVljAckuErFIoKJUmtgldAp6vpMCVmivTNaxmzRp7tH/pRvFxzw7mYS3Pn6alqcoJ0CCHwf+02IAMMHXnyLihfKmf6aslJGgYChYLIRb2AWrLBx+oUeItV6eCTbPt87TbDxgb5KrL/i91z7
