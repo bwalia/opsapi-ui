@@ -122,14 +122,14 @@ jobs:
       if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
       run: |
         echo "Deploying Helm Chart for OPSAPI UI in the ${{ env.TARGET_ENV }} environment."
-        echo "Using values file: ./devops/helm-chart/value-${{ env.TARGET_ENV }}.yaml"
+        echo "Using values file: ./devops/helm-chart/values-${{ env.TARGET_ENV }}.yaml"
         echo "Helm Chart path: ./devops/helm-chart"
         echo "Target Namespace: ${{ env.TARGET_ENV }}"
         echo "Image Repository: bwalia/opsapi-ui"
         echo "Image Tag: latest"
         echo "Creating namespace if it does not exist."
         helm delete opsapi-ui-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
-        helm upgrade --install opsapi-ui-${{ env.TARGET_ENV }} -f ./devops/helm-chart/value-${{ env.TARGET_ENV }}.yaml ./devops/helm-chart \
+        helm upgrade --install opsapi-ui-${{ env.TARGET_ENV }} -f ./devops/helm-chart/values-${{ env.TARGET_ENV }}.yaml ./devops/helm-chart \
           --set image.repository=bwalia/opsapi-ui \
           --set image.tag=latest \
           --namespace ${{ env.TARGET_ENV }} --create-namespace

@@ -1,0 +1,27 @@
+replicaCount: 1
+
+app_name: opsapi-ui
+app_environment: CICD_NAMESPACE_PLACEHOLDER
+
+image:
+  repository: bwalia/opsapi-ui
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: CICD_NAMESPACE_PLACEHOLDER-opsapi-ui.workstation.co.uk
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+secrets:
+  secure_env_file: helmfilesecretsplaceholder
