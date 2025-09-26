@@ -32,6 +32,8 @@ else
     CICD_NAMESPACE="$3"
 fi
 
+echo "Environment reference: $ENV_REF"
+echo "CICD Namespace: $CICD_NAMESPACE"
 echo "OSTYPE variable: $OSTYPE"
 
 # Method 3: Check for specific OS
