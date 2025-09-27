@@ -227,6 +227,7 @@ content = content.replace('helmfilesecretsplaceholder', '$SAFE_SEALEDSECRET_ENCR
 content = content.replace('CICD_NAMESPACE_PLACEHOLDER', '$CICD_NAMESPACE')
 content = content.replace('CICD_ENV_FILE_PLACEHOLDER_BASE64', '$SAFE_SEALEDSECRET_ENCRYPTED')
 content = content.replace('CICD_ENV_REF_PLACEHOLDER', '$ENV_REF')
+content = content.replace('prod-opsapi-ui.workstation.co.uk', 'opsapi-ui.workstation.co.uk')
 # Write back to file
 with open('$HELM_VALUES_OUTPUT_PATH', 'w') as f:
     f.write(content)
