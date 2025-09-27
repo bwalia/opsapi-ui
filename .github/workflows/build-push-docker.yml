@@ -142,7 +142,8 @@ jobs:
         echo "Image Repository: bwalia/opsapi-ui"
         echo "Image Tag: latest"
         echo "Creating namespace if it does not exist."
-        helm delete opsapi-ui-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
+        # helm delete opsapi-ui-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
+        helm list -n opsapi-ui-${{ env.TARGET_ENV }} | grep -q "opsapi-ui-${{ env.TARGET_ENV }}" && helm delete opsapi-ui-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }} || echo "Release opsapi-ui-${{ env.TARGET_ENV }} not found in namespace ${{ env.TARGET_ENV }}, skipping deletion"
         helm upgrade --install opsapi-ui-${{ env.TARGET_ENV }} -f ./devops/helm-chart/values-${{ env.TARGET_ENV }}.yaml ./devops/helm-chart \
           --set image.repository=bwalia/opsapi-ui \
           --set image.tag=latest \
