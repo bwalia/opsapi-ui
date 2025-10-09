@@ -5,17 +5,13 @@ import {
   DateInput,
   required,
   BooleanInput,
-  ReferenceInput,
   useCreate,
-  SelectArrayInput,
   ReferenceArrayInput,
   AutocompleteArrayInput,
-  FileInput,
-  FileField,
+  ImageInput,
+  ImageField,
 } from "react-admin";
-import { Grid, Box } from "@mui/material";
-// import { height, width } from "@mui/system";
-import { RichTextInput } from "ra-input-rich-text";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import WYSIWYGInput from "../components/common/WYSIWYGInput";
 
 const Form = () => {
@@ -31,68 +27,102 @@ const Form = () => {
       setChoices(prevTags);
     }
   }, [secretTags]);
+
   return (
-    <SimpleForm>
-      <Box sx={{ flexGrow: 1, width: "100%" }}>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextInput source="title" validate={[required()]} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextInput source="sub_title" validate={[required()]} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextInput source="slug" />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <ReferenceArrayInput source="tags" reference="tags" fullWidth>
-              <AutocompleteArrayInput
-                optionText="name"
+    <SimpleForm sx={{ maxWidth: 1200, margin: "auto" }}>
+      <Box sx={{ width: "100%" }}>
+        <Card sx={{ mb: 3, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+              Basic Information
+            </Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+              <TextInput source="title" validate={[required()]} fullWidth />
+              <TextInput source="sub_title" validate={[required()]} fullWidth />
+              <TextInput source="slug" fullWidth helperText="Leave blank to auto-generate from title" />
+              <ReferenceArrayInput source="tags" reference="tags" fullWidth>
+                <AutocompleteArrayInput
+                  optionText="name"
+                  fullWidth
+                  create={(filter) => {
+                    const name = filter;
+                    return {
+                      label: `Create "${name}"`,
+                      value: name,
+                    };
+                  }}
+                  onCreate={async (inputValue) => {
+                    const newTag = await create("tags", {
+                      data: { name: inputValue },
+                    });
+                    return newTag;
+                  }}
+                />
+              </ReferenceArrayInput>
+              <DateInput source="published_date" fullWidth />
+              <BooleanInput source="status" label="Published" />
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ mb: 3, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+              Cover Image
+            </Typography>
+            <ImageInput source="cover_image" accept="image/*">
+              <ImageField source="src" title="Cover Image" />
+            </ImageInput>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ mb: 3, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+              SEO Settings
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <TextInput source="meta_title" fullWidth helperText="Recommended: 50-60 characters" />
+              <TextInput
+                source="meta_description"
+                multiline
+                rows={3}
                 fullWidth
-                create={(filter) => {
-                  const name = filter;
-                  return {
-                    label: `Create "${name}"`,
-                    value: name,
-                  };
-                }}
-                onCreate={async (inputValue) => {
-                  const newTag = await create("tags", {
-                    data: { name: inputValue },
-                  });
-                  return newTag;
-                }}
+                helperText="Recommended: 150-160 characters"
               />
-            </ReferenceArrayInput>
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <FileInput source="cover_image">
-              <FileField source="src" title="Cover Image" />
-            </FileInput>
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <TextInput source="meta_title" />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <RichTextInput source="meta_description" />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <TextInput source="meta_keywords" multiline />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <RichTextInput source="excerpt" />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <WYSIWYGInput
-              source="content"
-              label="Content"
-              validate={required("Content is required")}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <BooleanInput source="status" />
-          </Grid>
-        </Grid>
+              <TextInput
+                source="meta_keywords"
+                multiline
+                rows={2}
+                fullWidth
+                helperText="Comma-separated keywords"
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ mb: 3, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+              Content
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <TextInput
+                source="excerpt"
+                multiline
+                rows={4}
+                fullWidth
+                label="Excerpt"
+                helperText="Brief summary of the document"
+              />
+              <WYSIWYGInput
+                source="content"
+                label="Content"
+                validate={required("Content is required")}
+              />
+            </Box>
+          </CardContent>
+        </Card>
       </Box>
     </SimpleForm>
   );
